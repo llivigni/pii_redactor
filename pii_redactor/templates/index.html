@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+	<title>PII Redactor</title>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="title">
+            <h1>PII Redactor</h1>
+            <p>Smart Code. Clever Solutions.</p>
+        </div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.gif') }}" class="logo" width="200" height="100">
+        </div>
+    </div>
+
+    <div class="file-submit">
+        <h1>File Upload</h1>
+        <form method="POST" action="" enctype="multipart/form-data">
+            <p><input type="file" name="file"></p>
+            <p><input type="submit" value="Submit"></p>
+        </form>
+    </div>
+
+</body>
+
+</html>

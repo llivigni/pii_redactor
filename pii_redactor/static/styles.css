@@ -1,0 +1,21 @@
+.header {
+    display: flex;
+    padding: 20px;
+    text-align: left;
+    background: black;
+    color: white;
+    font-size: 15px;
+}
+
+.title {
+    flex: 1;
+}
+
+.file-submit {
+    margin: 200px auto 0 auto;
+    width: 30%;
+    border: 5px solid black;
+    padding: 8px;
+    text-align: center;
+}
+

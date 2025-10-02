@@ -50,7 +50,19 @@ with open('PII_Redaction.txt', 'r') as file:                            # Change
     # [0-9]{9} - Exactly 9 numbers in range of 0-9
     bank_account_pattern = r'[0-9]{9}'
     
+    # Matches Addresses
+    # [0-9]{1,5} - 1 to 5 numbers in the range of 0-9
+    # [\sA-Za-z]+,\s - Matches one or more letters or whitespace, then a comma followed by a whitespace
+    # [\sA-Za-z]+,\s - Matches one or more letters or whitespace, then a comma followed by a whitespace
+    # [A-Z]{2}\s - Matches the state, two capital letters
+    # [0-9]{5} - Matches the zip code, five numbers in range of 0-9
     address_pattern = r'[0-9]{1,5} [\sA-Za-z]+,\s[\sA-Za-z]+,\s[A-Z]{2}\s[0-9]{5}'
+
+    ipv4_address_pattern = r'[0-255]{1}.[0-255]{1}.[0-255]{1}.[0-255]{1}'
+
+    ipv6_address_pattern = r'[A-Fa-f0-9]{1-4}:[A-Fa-f0-9]{1-4}:[A-Fa-f0-9]{1-4}:[A-Fa-f0-9]{1-4}:[A-Fa-f0-9]{1-4}:[A-Fa-f0-9]{1-4}:[A-Fa-f0-9]{1-4}:[A-Fa-f0-9]{1-4}'
+
+    vin_pattern = r'[A-HJ-NPR-Z0-9]{17}'
 
     phone_redaction = '###-###-####'
     ssn_redaction = '***_**_****'
