@@ -1,12 +1,13 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort
-from werkzeug.utils import secure_filename
 
 app=Flask(__name__)
 
-
-app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+# Files can be up to 16MB
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+# Allow these files
 app.config['UPLOAD_EXTENSIONS'] = ['.txt', '.pdf', '.doc', '.docx']
+# Send files to upload folder
 app.config['UPLOAD_PATH'] = 'uploads/'
 
 @app.route('/')
@@ -15,15 +16,18 @@ def index():
 
 @app.route('/', methods=['POST'])
 def upload_files():
-    uploaded_file = request.files['file']
-    filename = secure_filename(uploaded_file.filename)
-    if filename != '':
-        file_ext = os.path.splitext(filename)[1]
-        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-            abort(400)
-        uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-    #return redirect(url_for('index'))
-    return uploaded_file.filename
+
+    files_for_redaction = []                                        # List for uploaded files
+
+    # Upload multiple files
+    for uploaded_file in request.files.getlist('file'):
+        if uploaded_file.filename != '':
+            # Save files to upload folder
+            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], uploaded_file.filename))            
+            files_for_redaction.append(uploaded_file.filename)      # Saves files to list
+    
+    #return uploaded_file.filename
+    return files_for_redaction
 
 if __name__ == "__main__":
     app.run(debug=True)
