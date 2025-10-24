@@ -1,0 +1,47 @@
+body {
+  font-family: "Playfair Display", serif;
+}
+
+.header {
+    display: flex;
+    padding: 20px;
+    text-align: left;
+    background: black;
+    color: white;
+    font-size: 15px;
+}
+
+.title {
+    flex: 1;
+}
+
+.file-submit {
+    margin: 200px auto 0 auto;
+    width: 30%;
+    border: 5px solid black;
+    padding: 8px;
+    text-align: center;
+    position: relative;
+    top: -150px;
+}
+
+.message {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+}
+
+.safety-message {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    top: -150px;
+}
+
+input[type="submit"]:hover{
+    background-color: #A8C7E6;
+    font-size: 18px;
+}

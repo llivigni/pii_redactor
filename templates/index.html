@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+	<title>PII Redactor</title>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="title">
+            <h1>PII Redactor</h1>
+            <p>Smart Code. Clever Solutions.</p>
+        </div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.gif') }}" class="logo" width="200" height="100">
+        </div>
+    </div>
+
+    <div class="message">
+        <h1>Welcome to PII Redactor — a simple tool that safely and instantly removes all 
+            personally identifiable information (PII) from your uploaded files.</h1>
+    </div>
+
+    <!-- Handle multiple file submission -->
+    <div class="file-submit">
+        <h2>Upload a file(s) (.txt, .pdf, .doc, .docx) to have the PII redacted.</h2>
+        <form method="POST" action="" enctype="multipart/form-data">
+            <p><input type="file" name="file" multiple></p>
+            <p><input type="submit" value="Redact!"></p>
+        </form>
+    </div>
+
+    <div class="safety-message">
+        <p>Your file is processed securely and never stored.</p>
+    </div>
+
+</body>
+
+</html>
