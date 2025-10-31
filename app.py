@@ -1,7 +1,11 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
-from pii_redactor import pii_redactor
+from flask import Flask, render_template, request, redirect, url_for, abort
+from pii_redactor import PiiRedactor
 
+# Initialize PII_Redactor class
+redactor = PiiRedactor()
+
+# Initiate Flask app
 app=Flask(__name__)
 
 # Files can be up to 16MB
