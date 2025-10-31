@@ -1,6 +1,10 @@
+import subprocess
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort
 from pii_redactor import PiiRedactor
+
+# Ensure the required spacy library is installed
+subprocess.run(["spacy", "download", "en_core_web_sm"])
 
 # Initialize PII_Redactor class
 redactor = PiiRedactor()
