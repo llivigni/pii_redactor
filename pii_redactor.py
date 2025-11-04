@@ -144,7 +144,10 @@ class PiiRedactor():
 
             # Match all recorded patterns with respective replacements
             for pattern, replace, *additional_flags in self.__patterns:
-                flags = re.M if not additional_flags else re.M | additional_flags[0]
+                flags = re.M
+
+                for flag in additional_flags:
+                    flags |= flag
 
                 if not isinstance(pattern, list):
                     content = re.sub(pattern, replace, content, flags=flags)
