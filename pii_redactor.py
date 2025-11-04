@@ -140,7 +140,7 @@ class PiiRedactor():
 
             # Redact names
             for name in names:
-                content.replace(name, "[NAME]")
+                content = content.replace(name, "[NAME]")
 
             # Match all recorded patterns with respective replacements
             for pattern, replace, *additional_flags in self.__patterns:
