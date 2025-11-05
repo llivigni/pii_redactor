@@ -1,6 +1,7 @@
 import spacy
 import re
 import os
+import pymupdf as fitz
 from pypdf import PdfReader
 import docx2txt
 from pdfminer.high_level import extract_text
@@ -11,6 +12,13 @@ from docx import Document
 class PiiRedactor():
     def __init__(self):
         self.__nlp = spacy.load("en_core_web_sm")
+        self.__nlp_patterns = [
+            # SpaCy label, redaction replacement
+            ("PERSON", "[NAME]"),
+            ("DATE", "[DATE]"),
+            ("GPE", "[CITY, STATE, or COUNTRY]"),
+            ("LOC", "[LOCATION]")
+        ]
         self.__patterns = [
             # Pattern, Replacement, [Optional additional flags]
 
@@ -133,27 +141,11 @@ class PiiRedactor():
         with open(input_path, "r") as file:
             content = file.read()
             doc = self.__nlp(content)
-            names = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
-            dates = [ent.text for ent in doc.ents if ent.label_ == "DATE"]
-            gpes = [ent.text for ent in doc.ents if ent.label_ == "GPE"]
-            locs = [ent.text for ent in doc.ents if ent.label_ == "LOC"]
-
-
-            # Redact names
-            for name in names:
-                content = content.replace(name, "[NAME]")
-
-            # Redact dates
-            for date in dates:
-                content = content.replace(date, "[DATE]")
-
-            # Redact GPEs
-            for gpe in gpes:
-                content = content.replace(gpe, "[CITY, STATE, OR COUNTRY]")
-
-            # Redact locations
-            for loc in locs:
-                content = content.replace(loc, "[LOCATION]")
+            
+            for label, replace in self.__nlp_patterns:
+                patterns = [ent.text for ent in doc.ents if ent.label_ == label]
+                for p in patterns:
+                    content = content.replace(p, replace)
 
             # Match all recorded patterns with respective replacements
             for pattern, replace, *additional_flags in self.__patterns:
@@ -171,3 +163,17 @@ class PiiRedactor():
 
         with open(output_path, "w") as file:
             file.write(content)
+
+
+    def redact_pdf(self, input_file, output_file):
+        if not input_file.endswith(".pdf"):
+            raise Exception("Must be PDF file.")
+
+        doc = fitz.open(input_file)
+        for page in doc:
+            words = page.get_text("words")
+            words_text = " ".join([w[4] for w in words])
+
+            nlp_doc = self.__nlp(words_text)
+            for label, replace in self.__nlp_patterns:
+                patterns = [ent.text for ent in nlp_doc.ents if ent.label_ == label]
