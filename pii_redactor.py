@@ -74,9 +74,6 @@ class PiiRedactor():
             # Vehicle Identifier Number
             ( r'[A-HJ-NPR-Z0-9]{17}', "[VIN]" ),
 
-            # American Date format
-            ( r'\d{1,2}\/\d{1,2}\/\d{2,4}', "[DATE]" ),
-
             # General License Plate
             ( r'[A-Z]{3}-*\d{4}', "[LICENSE PLATE #]" ),
 
@@ -137,10 +134,26 @@ class PiiRedactor():
             content = file.read()
             doc = self.__nlp(content)
             names = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
+            dates = [ent.text for ent in doc.ents if ent.label_ == "DATE"]
+            gpes = [ent.text for ent in doc.ents if ent.label_ == "GPE"]
+            locs = [ent.text for ent in doc.ents if ent.label_ == "LOC"]
+
 
             # Redact names
             for name in names:
                 content = content.replace(name, "[NAME]")
+
+            # Redact dates
+            for date in dates:
+                content = content.replace(date, "[DATE]")
+
+            # Redact GPEs
+            for gpe in gpes:
+                content = content.replace(gpe, "[CITY, STATE, OR COUNTRY]")
+
+            # Redact locations
+            for loc in locs:
+                content = content.replace(loc, "[LOCATION]")
 
             # Match all recorded patterns with respective replacements
             for pattern, replace, *additional_flags in self.__patterns:
