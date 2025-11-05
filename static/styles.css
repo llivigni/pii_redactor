@@ -45,3 +45,12 @@ input[type="submit"]:hover{
     background-color: #A8C7E6;
     font-size: 18px;
 }
+
+.redacted-file {
+    display: inline-block;
+}
+
+.downloads {
+    margin-top: 10px;
+    text-align: center;
+}
