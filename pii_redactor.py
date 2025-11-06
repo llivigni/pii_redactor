@@ -52,7 +52,7 @@ class PiiRedactor():
 
             # Bank Account Number
             # [0-9]{9} - Exactly 9 numbers in range of 0-9
-            ( r'[0-9]{9}', "[BANK ACCOUNT]" ),
+            ( r'[0-9]{6,17}', "[BANK ACCOUNT]" ),
 
             # Addresses 
             # [0-9]{1,5} - 1 to 5 numbers in the range of 0-9
