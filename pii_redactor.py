@@ -1,26 +1,34 @@
 import spacy
 import re
 import os
+from dateutil.parser import parse
 import pymupdf as fitz
-from pypdf import PdfReader
-import docx2txt
-from pdfminer.high_level import extract_text
-from fpdf import FPDF
-from docx import Document
-
 
 class PiiRedactor():
     def __init__(self):
-        self.__nlp = spacy.load("en_core_web_sm")
+        self.__nlp = spacy.load("en_core_web_trf")
         self.__nlp_patterns = [
             # SpaCy label, redaction replacement
             ("PERSON", "[NAME]"),
             ("DATE", "[DATE]"),
-            ("GPE", "[CITY, STATE, or COUNTRY]"),
-            ("LOC", "[LOCATION]")
+            #("GPE", "[CITY, STATE, or COUNTRY]"),
+            #("LOC", "[LOCATION]")
         ]
         self.__patterns = [
             # Pattern, Replacement, [Optional additional flags]
+
+            # Medical Record Number
+            ( r'(?i)medical\s*(?:record)?\s*(?:number|num|#)?[:\s]{0,10}(\d{6,12})\b', "[MEDICAL RECORD #]", re.IGNORECASE ),
+
+
+            # Passport
+            ( r'passport.*?[A-Z]{1}[0-9]{8}', "[PASSPORT #]", re.IGNORECASE ),
+
+            # Vehicle Identifier Number
+            ( r'[A-HJ-NPR-Z0-9]{17}', "[VIN]" ),
+
+            # Age
+            ( r'\b(?:aged?\s*\d{1,3}|(?:\d{1,3}\s*(?:years?|yrs?|yo|y/o)\s*old?)|\d{1,3}-year-old)\b', "[AGE]" ),
 
             # Email Addresses 
             # [a-zA-Z0-9_.+-]+ - Repeated one or more times: Any lowercase/capital letter, number, underscore, period, plus sign, and dash
@@ -29,6 +37,9 @@ class PiiRedactor():
             # \. - Matches one period
             # [a-zA-Z0-9-.]+ - Repeated one or more times: Any lowercase/capital letter, number, and dash
             ( r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', "[EMAIL]" ),
+
+            # Fax
+            ( r'fax.{0,15}(\(?[0-9]{3}\)?[-\s]?[0-9]{3}[-\s]?[0-9]{4})', "[FAX]", re.IGNORECASE ),
 
             # Phone Number
             # \(? - Escapes parenthesis so it's taken as a literal character '(' instead of grouping
@@ -79,14 +90,8 @@ class PiiRedactor():
             # MAC Address
             ( r'[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}', "[MAC]" ),
 
-            # Vehicle Identifier Number
-            ( r'[A-HJ-NPR-Z0-9]{17}', "[VIN]" ),
-
             # General License Plate
             ( r'[A-Z]{3}-*\d{4}', "[LICENSE PLATE #]" ),
-
-            # Passport
-            ( r'passport.*?[A-Z]{1}[0-9]{8}', "[PASSPORT #]", re.IGNORECASE ),
             
             # Generic Student ID
             ( r'[A-Z]{1}[0-9]{6,8}', "[STUDENT #]" ),
@@ -135,31 +140,118 @@ class PiiRedactor():
                 "[DRIVER LICENSE #]" )
         ]
 
-    def redact(self, input_path, output_path):
+    ##################### Helper Functions #####################
+    
+    def __process_dates(self, nlp_doc) -> list:
+        """
+        Method to process spacy-recognized dates by removing
+        false positives and return a list of true, human-recognizable
+        dates.
+        """
+        true_dates = []
+        RELATIVE_KEYWORDS = [
+            "ago", "from now", "next", "last", "past", "future",
+            "today", "yesterday", "tomorrow", "this", "coming", "previous",
+            "day", "days", "month", "months", "year", "years",
+            "week", "weeks"
+        ]
+
+        for ent in nlp_doc.ents:
+            if not ent.label_ == "DATE":
+                continue
+
+            if re.match(r"\b(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day),?\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{2,4})?\b", ent.text, re.M):
+                true_dates.append(ent.text)
+                continue
+
+            if any(keyword in ent.text.lower() for keyword in RELATIVE_KEYWORDS):
+                continue
+
+            try:
+                date = parse(ent.text, fuzzy=True)
+                true_dates.append(ent.text)
+            except:
+                pass
+        
+        return true_dates
+
+
+    def __search_for(self, page, search_text):
+        search_text = search_text.strip()
+        rects = []
+        words = page.get_text("words")
+
+        split = search_text.split()
+
+        if len(split) > 1:
+            rects = page.search_for(search_text)
+            return rects
+
+        for w in words:
+            text = w[4]
+            if text == search_text:
+                x0, y0, x1, y1, *_ = w
+                rect = fitz.Rect(x0, y0, x1, y1)
+                rects.append(rect)
+
+        return rects
+
+
+    def __draw_redact(self, page_buffer, rect, replace_text):
+        """
+        Method to draw a rectangular box over given rectangle
+        position, then add text on top to show redaction type.
+        """
+        x0, y0, *_ = rect
+        text_pos = fitz.Point(x0, y0 + 10)
+
+        page_buffer.draw_rect(rect, fill=(1,1,0))
+        page_buffer.insert_text(text_pos, replace_text)
+
+    ################### Main Class Functions ###################
+
+    def redact_wrapper(self, input_path, output_path):
+        """
+        Wrapper function to execute specific redaction methods
+        for files of specific file extensions/types.
+        """
+
+        file_ext = input_path.split(".")[-1]
+        match(file_ext):
+            case "pdf":
+                self.redact_pdf(input_path, output_path)
+                
+            case _:
+                self.redact_text(input_path, output_path)
+
+
+    def redact_text(self, input_path, output_path):
         content = ""
 
         with open(input_path, "r") as file:
             content = file.read()
-            doc = self.__nlp(content)
-            
-            for label, replace in self.__nlp_patterns:
-                patterns = [ent.text for ent in doc.ents if ent.label_ == label]
-                for p in patterns:
-                    content = content.replace(p, replace)
+        
+        doc = self.__nlp(content)
+        
+        for label, replace in self.__nlp_patterns:
+            patterns = [ent.text for ent in doc.ents if ent.label_ == label] if not label=="DATE" else self.__process_dates(doc)
 
-            # Match all recorded patterns with respective replacements
-            for pattern, replace, *additional_flags in self.__patterns:
-                flags = re.M
+            for p in patterns:
+                content = content.replace(p, replace)
 
-                for flag in additional_flags:
-                    flags |= flag
+        # Match all recorded patterns with respective replacements
+        for pattern, replace, *additional_flags in self.__patterns:
+            flags = re.M
 
-                if not isinstance(pattern, list):
-                    content = re.sub(pattern, replace, content, flags=flags)
-                    continue
+            for flag in additional_flags:
+                flags |= flag
 
-                for p in pattern:
-                    content = re.sub(p, replace, content, flags=flags)
+            if not isinstance(pattern, list):
+                content = re.sub(pattern, replace, content, flags=flags)
+                continue
+
+            for p in pattern:
+                content = re.sub(p, replace, content, flags=flags)
 
         with open(output_path, "w") as file:
             file.write(content)
@@ -171,9 +263,52 @@ class PiiRedactor():
 
         doc = fitz.open(input_file)
         for page in doc:
-            words = page.get_text("words")
-            words_text = " ".join([w[4] for w in words])
+            #words = page.get_text("words")
+            #words_text = " ".join([w[4] for w in words])
+            words = page.get_textpage()
+            words_text = words.extractText()
+
+            for pattern, replace, *opt_flags in self.__patterns:
+                flags = re.M
+
+                for flag in opt_flags:
+                    flags |= flag
+
+                # TODO: Do pattern for driver's license
+                if isinstance(pattern, list):
+                    continue
+
+                for matched in re.finditer(pattern, words_text, flags):
+                    matched_text = matched.group()
+
+                    if "FAX" in replace or "MEDICAL" in replace:
+                        matched_text = matched.group(1) if matched.lastindex else matched.group()
+
+                    rects = page.search_for(matched_text)
+                    if not rects:
+                        continue
+
+                    for rect in rects:
+                        self.__draw_redact(page, rect, replace)
+
+                    words_text = re.sub(pattern, "", words_text)
 
             nlp_doc = self.__nlp(words_text)
             for label, replace in self.__nlp_patterns:
-                patterns = [ent.text for ent in nlp_doc.ents if ent.label_ == label]
+                patterns = [ent.text for ent in nlp_doc.ents if ent.label_ == label] if not label=="DATE" else self.__process_dates(nlp_doc)
+
+                if label == "PERSON":
+                    print(label, patterns)
+
+                for p in patterns:
+                    rects = page.search_for(p) if not label == "PERSON" else self.__search_for(page, p)
+                    
+                    if not rects:
+                        continue
+                    
+                    for rect in rects:
+                        self.__draw_redact(page, rect, replace)
+
+                    words_text = re.sub(p, "", words_text)
+
+            doc.save(output_file, garbage=3, clean=True, deflate=True)

@@ -35,13 +35,13 @@ def upload_files():
             uploaded_file.save(file_path)  
 
             name, extension = os.path.splitext(uploaded_file.filename) 
-            #redacted_filename = f"{name}_redacted{extension}"      
-            redacted_filename = f"{name}_redacted.txt" 
+            redacted_filename = f"{name}_redacted{extension}"      
+            #redacted_filename = f"{name}_redacted.txt" 
             output_path = os.path.join(app.config['RESULT_PATH'], redacted_filename) 
 
             redacted_files.append(redacted_filename)
-            
-            redactor.redact(file_path, output_path) 
+
+            redactor.redact_wrapper(file_path, output_path)
 
     
     #return uploaded_file.filename
