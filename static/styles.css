@@ -22,12 +22,12 @@ body {
     padding: 8px;
     text-align: center;
     position: relative;
-    top: -150px;
+    top: -200px;
 }
 
 .message {
-    margin: auto;
-    width: 50%;
+    margin: 0;
+    width: 100%;
     padding: 10px;
     text-align: center;
 }
@@ -38,7 +38,7 @@ body {
     padding: 10px;
     text-align: center;
     position: relative;
-    top: -150px;
+    top: -200px;
 }
 
 input[type="submit"]:hover{
@@ -53,4 +53,10 @@ input[type="submit"]:hover{
 .downloads {
     margin-top: 10px;
     text-align: center;
+}
+
+textarea {
+    width: 90%;
+    height: 100px;
+    padding: 10px;
 }
