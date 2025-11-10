@@ -33,6 +33,11 @@
         <h2>Upload a file(s) (.txt, .pdf, .doc, .docx) to have the PII redacted.</h2>
         <form method="POST" action="" enctype="multipart/form-data">
             <p><input type="file" name="file" multiple></p>
+            <h2>Write or Paste Your Text Below</h2>
+
+            <!-- Textarea for writing or pasting text -->
+            <textarea name="text_input" placeholder="Type or paste your text here..."></textarea>
+
             <p><input type="submit" value="Redact!"></p>
         </form>
     </div>
