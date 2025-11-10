@@ -1,11 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
-from pii_redactor import PiiRedactor
+from pii_redactor import pii_redactor
 
-# Initialize PII_Redactor class
-redactor = PiiRedactor()
-
-# Initiate Flask app
 app=Flask(__name__)
 
 # Files can be up to 16MB
@@ -15,7 +11,6 @@ app.config['UPLOAD_EXTENSIONS'] = ['.txt', '.pdf', '.docx']
 # Send files to upload folder
 app.config['UPLOAD_PATH'] = 'uploads/'
 #Send redacted files to results folder
-#app.config['RESULT_PATH'] = 'results/'
 app.config['RESULT_PATH'] = 'static/'
 
 @app.route('/')
@@ -27,6 +22,25 @@ def upload_files():
 
     redacted_files = []
 
+    text_input = request.form.get('text_input')
+
+    if text_input and text_input.strip():
+        text_input_file_path = os.path.join(app.config['UPLOAD_PATH'], 'text_input.txt')
+
+        with open(text_input_file_path, 'w', encoding='utf-8') as file:
+            file.write(text_input)
+
+        redacted_filename = "text_input_redacted.txt"
+
+        output_path = os.path.join(app.config['RESULT_PATH'], redacted_filename) 
+
+
+        pii_redactor(text_input_file_path, output_path)
+
+        redacted_files.append(redacted_filename)
+
+
+
     # Upload multiple files
     for uploaded_file in request.files.getlist('file'):
         if uploaded_file.filename != '':
@@ -35,16 +49,14 @@ def upload_files():
             uploaded_file.save(file_path)  
 
             name, extension = os.path.splitext(uploaded_file.filename) 
-            redacted_filename = f"{name}_redacted{extension}"      
-            #redacted_filename = f"{name}_redacted.txt" 
+            redacted_filename = f"{name}_redacted{extension}" 
             output_path = os.path.join(app.config['RESULT_PATH'], redacted_filename) 
 
             redacted_files.append(redacted_filename)
-
-            redactor.redact_wrapper(file_path, output_path)
+            
+            pii_redactor(file_path, output_path) 
 
     
-    #return uploaded_file.filename
     return render_template('results.html', redacted_files=redacted_files)
 
 
