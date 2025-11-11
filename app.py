@@ -1,6 +1,8 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
-from pii_redactor import pii_redactor
+from pii_redactor import PiiRedactor
+
+redactor = PiiRedactor()
 
 app=Flask(__name__)
 
@@ -35,7 +37,7 @@ def upload_files():
         output_path = os.path.join(app.config['RESULT_PATH'], redacted_filename) 
 
 
-        pii_redactor(text_input_file_path, output_path)
+        redactor.redact_text(text_input_file_path, output_path, save=False)
 
         redacted_files.append(redacted_filename)
 
@@ -54,7 +56,7 @@ def upload_files():
 
             redacted_files.append(redacted_filename)
             
-            pii_redactor(file_path, output_path) 
+            redactor.redact_wrapper(file_path, output_path) 
 
     
     return render_template('results.html', redacted_files=redacted_files)
