@@ -23,13 +23,32 @@
         </div>
     </div>
 
+    {% if redacted_text %}
+        <div class="text-output">
+            <h2>Redacted text output</h2>
+            <textarea id="myInput" readonly class="redacted-box">{{ redacted_text }}</textarea>
+            <button id="copy-button" type="button" onclick="copyRedacted()">Copy text</button>
+        </div>
+    {% endif %}
 
    <div class="downloads">
-        <h2>Download redacted files.</h2>
+        <h2>Download redacted files</h2>
         {% for file in redacted_files %}
             <a class="redacted-file" href="{{ url_for('static', filename=file) }}" download>Download {{file}}</a>
         {% endfor %}
    </div>
+
+   <script>
+
+   function copyRedacted() {
+    var copyText = document.getElementById("myInput");
+
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); 
+
+    navigator.clipboard.writeText(copyText.value);
+   }
+    </script>
 
 </body>
 
