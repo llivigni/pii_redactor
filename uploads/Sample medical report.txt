@@ -1,0 +1,229 @@
+Patient name:
+
+John Doe
+
+Medical Record Number:
+
+123456789
+
+Date admitted:
+
+July 1, 2050
+
+Date discharged:
+
+July 3, 2050
+
+Attending Physician:
+
+Dr. Will Teachwell
+
+Resident Physician:
+
+Dr. Bea Goodoc
+
+Diagnosis:
+
+Left-sided systolic congestive heart failure
+EF of 35% on echo performed 3 months ago
+
+Other diagnoses:
+
+Type 2 Diabetes
+Stage 2 Hypertension
+Osteoarthritis
+
+History:
+Mr. Doe is a 72 year old gentleman with a history of CHF who presented with a 3 day history of gradually
+worsening lower extremity edema, weight gain, and shortness of breath. Today while trying to mow his
+lawn he had to stop multiple times to catch his breath and developed some chest tightness leading him
+to come to the emergency room. He denies any other decrease in exercise tolerance or chest pain
+leading up to this event. He reports good understanding and adherence to his medications, but does
+report that when his daughter was visiting town 4 days prior to admission that he and his wife took her
+out for a special Mexican dinner and he indulged in several baskets of chips and salsa.
+Problems:
+1. CHF – On admission he had 3+ lower extremity pitting edema, rales from the bases to midlung
+bilaterally, elevated jugular venous pressure and a CXR consistent with volume overload. He was
+diuresed and was able to quickly wean off supplemental oxygen and exam revealed resolution of his
+edema and rales at discharge. Discharge weight is 202 lbs. Given that dietary indiscretion led to the
+exacerbation, it was not felt necessary to change his home diuretic regimen at this time. He was reeducated on diet and taking daily weights including information about weight gain that should trigger
+him to call his primary doctor. He will follow up with his doctor at the end of this week for volume
+reassessment and electrolyte labs.
+2. Chest pain – due to chest pain while mowing, he was ruled out for an MI with serial EKGs and
+enzymes. His EKGs remained unchanged from previous and his enzyme curve remained normal. Chest
+pain was attributed to his hypoxia from his CHF and no further work-up was pursued at this time. On
+
+follow-up, should readdress and make sure that he remains without change in his exercise tolerance and
+remains pain free now that he is back to euvolemia.
+3. Type 2 Diabetes – His HgbA1C was 7.3 which is good control for him at this time. No changes were
+made to his diabetic regimen. On health maintenance questioning he revealed it has been 18 months
+since his last eye appointment and we recommended he make an appointment as soon as he can get in.
+4. Hypertension – Though initially elevated at the time of admission, his BP came down nicely with
+diuresis and was 142/82 once euvolemic. In keeping with JNC-7 guidelines, we increased his lisinopril to
+40 mg/day and his metoprolol to 50mg BID for optimal BP control given his diabetes. He resonded well
+to this without complications and was 126/72 at discharge.
+5. Osteoarthritis – His knee pain was well controlled with Tylenol prn.
+
+Medications:
+New medications:
+
+None
+
+Medications discontinued:
+
+None
+
+Medications continued with dose changes:
+
+Metorolol 50 mg PO BID
+Lisinopril 40 mg PO qd
+
+Medications continued unchanged:
+
+ASA 81 mg PO qd
+Furosemide 40 mg PO BID
+Spironolactone 50 mg PO qd
+Metformin 1000 mg PO BID
+Glipizide 10 mg PO BID
+Tylenol 325 mg PO q 4 hours as needed for pain
+
+Functional status: He is at baseline, no assistance needed, independent ADLs .
+Pending Results:
+
+None
+
+Follow up:
+
+Dr. Primary Care - Friday, July 7 at 11:30
+Dr. Regular Cardiologist – Thursday, July 27 at 2:30
+
+Cc:
+
+Dr. Primary Care – fax 123-456-7890
+Dr. Regular Cardiologist – fax 123-098-7654
+
+Patient name:
+
+Mary Malloy
+
+Medical Record Number:
+
+123456789
+
+Date admitted:
+
+July 1, 2050
+
+Date discharged:
+
+July 3, 2050
+
+Attending Physician:
+
+Dr. Will Teachwell
+
+Resident Physician:
+
+Dr. Bea Goodoc
+
+Diagnosis:
+
+Left intertrochanteric hip fracture
+
+Procedure:
+
+Left hemiarthroplasty
+
+Orthopedist:
+
+Dr. Cal Seeyum
+
+Other diagnoses:
+
+Post-op atrial fibrillation
+Congestive heart failure – EF of 40% on echo May 2049
+Coronary artery disease
+Stage 2 Hypertension
+Osteoarthritis
+Osteoporosis
+
+History:
+Mrs. Malloy is a 83 year old woman who presented after slipping on the ice while trying to retrieve her
+morning newspaper. She landed on her left side and had immediate left leg pain upon trying to rise.
+Her neighbor noted her fall and called 911 when it was apparent she had been injured. She denied any
+head trauma or loss of consciousness and no other injuries were found on full body assessment.
+Problems:
+1. Left intertrochanteric femur fracture – Patient underwent a left hemiarthroplasty on hospital day 1.
+(Please see full Op note if further details desired.) Her post-p course was complicated by a two day
+period of atrial fibrillation and volume overload as detailed below, but otherwise she tolerated the
+procedure well. She started physical therapy POD #1 and has been progressing as expected. She will be
+discharged to the TLC Rehab Center to complete her course of rehab with the goal of returning to
+independent living. Her pain is currently well controlled on scheduled Tylenol as below with morphine
+sulfate 30mg tablet given 30 minutes prior to her morning and afternoon therapy sessions. She will
+remain on lovenox BID for DVT prohylaxis until she completes her therapy and is once again fully mobile.
+The surgical site should be evaluated daily for signs of infection, though currently this has not been a
+
+problem. If she continues to heal well, the staples need to be removed on July 12. She is scheduled for
+follow-up with ortho A clinic as below.
+2. Cardiovascular – At baseline she has fair exercise tolerance and has done well on her CHF regimen.
+POD #1 she developed atrial fibrillation with rapid ventricular response and a medicine consult was
+called. They adjusted her metoprolol dose and diuresed her with a resolution of her hypervolemia and
+A-fib in 2 days. Due to her CHF and A-fib she was ruled out for a peri-op MI with serial EKGs and
+enzymes. TSH was within normal limits. She is currently doing well and is considered to be euvolemic
+with a weight of 146 lbs.
+3. Osteoporosis – Mrs. Malloy has never received a Dexa scan, but was taking vitamin D and calcium
+supplementation prior to admission, which was increased while here in keeping with new guidelines.
+She has been referred for ongoing treatment of her osteoporosis and is scheduled to have a Dexa scan
+on August 1 in the Bone and Mineral Metabolism clinic. We have deferred decisions re: bisphosphanate
+therapy choices to their expertise.
+4. Rehab/Functional Status – At baseline, Mrs. Malloy lived independently and was independent in all
+ADLs. Her daughter assisted her with grocery shopping and transportation to events out of her
+immediate neighborhood as she has felt less and less comfortable driving longer distances. Her MMSE
+was 28/30 on this admission and she participated well in PT and OT – please see attached therapy
+progress notes for specifics. It is expected she will need 2 more weeks of inpatient therapy to be able to
+safely return home. At that time, we recommend a home safety evaluation by OT scheduled at a time
+her daughter can also be present to assist in making her home less of a fall risk.
+Medications:
+New medications:
+
+Lovenox 30mg SC every 12 hours
+Morphine sulfate 30 mg PO twice daily, to be
+administered 30 minutes prior to her therapy
+sessions
+Tylenol 500 mg 2 tabs PO every 8 hours
+Colace 100 mg PO BID
+
+Medications discontinued:
+
+None
+
+Medications continued with dose changes:
+
+Metorolol 100 mg PO BID
+Calcium citrate with vitamin D – 500mg/400IU
+one tab PO BID
+
+Medications continued unchanged:
+
+ASA 81 mg PO qd
+Lisinopril 20 mg PO qd
+
+Furosemide 40 mg PO BID
+Spironolactone 50 mg PO qd
+
+Pending Results:
+
+None
+
+Follow up:
+
+Dr. Orthopedist – July 12 at 3:30 pm
+Dr. Primary Care – July 28 at 10:00 am
+Dr. Bone Mineral – August 1 at 9:00 am
+
+Cc:
+
+Dr. Primary Care – fax 123-456-7890
+Dr. Bone Mineral – fax 123-098-7654
+
+
