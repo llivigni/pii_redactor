@@ -37,7 +37,7 @@ def upload_files():
         output_path = os.path.join(app.config['RESULT_PATH'], redacted_filename) 
 
 
-        redactor.redact_text(text_input_file_path, output_path, save=False)
+        redactor.redact_text(text_input_file_path, output_path, save=False, text=text_input)
 
         redacted_files.append(redacted_filename)
 

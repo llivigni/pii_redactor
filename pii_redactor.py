@@ -177,7 +177,11 @@ class PiiRedactor():
 
 
     def __search_for(self, page, search_text):
+        honorifics_pattern = r'(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?'
+        honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Mx", "Dr" ]
+        
         search_text = search_text.strip()
+
         rects = []
         words = page.get_text("words")
 
@@ -185,6 +189,14 @@ class PiiRedactor():
 
         if len(split) > 1:
             rects = page.search_for(search_text)
+            
+            # Additionally search for full name with honorifics
+            for h in honorifics:
+                tmp_rects = page.search_for(f"{h}. {search_text}")
+                if not tmp_rects:
+                    continue
+                rects = rects + tmp_rects
+
             return rects
 
         for w in words:
@@ -194,19 +206,22 @@ class PiiRedactor():
                 rect = fitz.Rect(x0, y0, x1, y1)
                 rects.append(rect)
 
+        # Additionally search for single-word names with honorifics
+        for h in honorifics:
+            tmp_rects = page.search_for(f"{h}. {search_text}")
+            if not tmp_rects:
+                continue
+            rects = rects + tmp_rects
+
         return rects
 
 
-    def __draw_redact(self, page_buffer, rect, replace_text):
+    def __draw_redact(self, page_buffer, rect):
         """
         Method to draw a rectangular box over given rectangle
         position, then add text on top to show redaction type.
         """
-        x0, y0, *_ = rect
-        text_pos = fitz.Point(x0, y0 + 10)
-
-        page_buffer.draw_rect(rect, fill=(1,1,0))
-        page_buffer.insert_text(text_pos, replace_text)
+        page_buffer.draw_rect(rect, fill=(0,0,0))
 
     ################### Main Class Functions ###################
 
@@ -225,11 +240,20 @@ class PiiRedactor():
                 self.redact_text(input_path, output_path)
 
 
-    def redact_text(self, input_path, output_path):
+    def redact_text(self, input_path, output_path, *, save=True, text=""):
         content = ""
 
-        with open(input_path, "r") as file:
-            content = file.read()
+        if save:
+            if not os.path.exists(input_path):
+                raise Exception(f"The input path to `redact_text()` doesn't exist: {input_path}")
+
+            with open(input_path, "r") as file:
+                content = file.read()
+        else:
+            if not text:
+                raise Exception("Text not provided to `redact_text()` with `save=False`")
+
+            content = text
         
         doc = self.__nlp(content)
         
@@ -253,6 +277,9 @@ class PiiRedactor():
             for p in pattern:
                 content = re.sub(p, replace, content, flags=flags)
 
+        if not save:
+            return
+
         with open(output_path, "w") as file:
             file.write(content)
 
@@ -260,13 +287,11 @@ class PiiRedactor():
     def redact_pdf(self, input_file, output_file):
         if not input_file.endswith(".pdf"):
             raise Exception("Must be PDF file.")
-
+        
         doc = fitz.open(input_file)
         for page in doc:
-            #words = page.get_text("words")
-            #words_text = " ".join([w[4] for w in words])
-            words = page.get_textpage()
-            words_text = words.extractText()
+            words = page.get_text("words")
+            words_text = " ".join([w[4] for w in words])
 
             for pattern, replace, *opt_flags in self.__patterns:
                 flags = re.M
@@ -289,7 +314,7 @@ class PiiRedactor():
                         continue
 
                     for rect in rects:
-                        self.__draw_redact(page, rect, replace)
+                        self.__draw_redact(page, rect)
 
                     words_text = re.sub(pattern, "", words_text)
 
@@ -307,7 +332,7 @@ class PiiRedactor():
                         continue
                     
                     for rect in rects:
-                        self.__draw_redact(page, rect, replace)
+                        self.__draw_redact(page, rect)
 
                     words_text = re.sub(p, "", words_text)
 
