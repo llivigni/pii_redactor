@@ -14,6 +14,8 @@ class PiiRedactor():
             #("GPE", "[CITY, STATE, or COUNTRY]"),
             #("LOC", "[LOCATION]")
         ]
+        self.__honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Mx", "Dr" ]
+        self.__honorifics_pattern = r'(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?'
         self.__patterns = [
             # Pattern, Replacement, [Optional additional flags]
 
@@ -177,9 +179,6 @@ class PiiRedactor():
 
 
     def __search_for(self, page, search_text):
-        honorifics_pattern = r'(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?'
-        honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Mx", "Dr" ]
-        
         search_text = search_text.strip()
 
         rects = []
@@ -191,7 +190,7 @@ class PiiRedactor():
             rects = page.search_for(search_text)
             
             # Additionally search for full name with honorifics
-            for h in honorifics:
+            for h in self.__honorifics:
                 tmp_rects = page.search_for(f"{h}. {search_text}")
                 if not tmp_rects:
                     continue
@@ -207,7 +206,7 @@ class PiiRedactor():
                 rects.append(rect)
 
         # Additionally search for single-word names with honorifics
-        for h in honorifics:
+        for h in self.__honorifics:
             tmp_rects = page.search_for(f"{h}. {search_text}")
             if not tmp_rects:
                 continue
@@ -260,8 +259,13 @@ class PiiRedactor():
         for label, replace in self.__nlp_patterns:
             patterns = [ent.text for ent in doc.ents if ent.label_ == label] if not label=="DATE" else self.__process_dates(doc)
 
+            print(patterns)
             for p in patterns:
+                honor_pattern = rf"{self.__honorifics_pattern}\s*{p}"
+                
+                content = re.sub(honor_pattern, replace, content, flags=re.M | re.IGNORECASE)
                 content = content.replace(p, replace)
+
 
         # Match all recorded patterns with respective replacements
         for pattern, replace, *additional_flags in self.__patterns:
