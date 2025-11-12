@@ -46,6 +46,11 @@ input[type="submit"]:hover{
     font-size: 18px;
 }
 
+#copy-button:hover {
+    background-color: #A8C7E6;
+    font-size: 18px;
+}
+
 .redacted-file {
     display: inline-block;
 }
@@ -59,4 +64,11 @@ textarea {
     width: 90%;
     height: 100px;
     padding: 10px;
+}
+
+.text-output {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
 }
