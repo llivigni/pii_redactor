@@ -1,8 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
-from pii_redactor import PiiRedactor
-
-redactor = PiiRedactor()
+from pii_redactor import pii_redactor
 
 app=Flask(__name__)
 
@@ -22,6 +20,8 @@ def index():
 @app.route('/', methods=['POST'])
 def upload_files():
 
+    redacted_text = None
+
     redacted_files = []
 
     text_input = request.form.get('text_input')
@@ -32,15 +32,12 @@ def upload_files():
         with open(text_input_file_path, 'w', encoding='utf-8') as file:
             file.write(text_input)
 
-        redacted_filename = "text_input_redacted.txt"
+        output_path = os.path.join(app.config['RESULT_PATH'], 'text_input_redacted.txt') 
 
-        output_path = os.path.join(app.config['RESULT_PATH'], redacted_filename) 
+        pii_redactor(text_input_file_path, output_path)
 
-
-        redactor.redact_text(text_input_file_path, output_path, save=False, text=text_input)
-
-        redacted_files.append(redacted_filename)
-
+        with open(output_path, 'r', encoding='utf-8') as file:
+            redacted_text = file.read()
 
 
     # Upload multiple files
@@ -56,10 +53,10 @@ def upload_files():
 
             redacted_files.append(redacted_filename)
             
-            redactor.redact_wrapper(file_path, output_path) 
+            pii_redactor(file_path, output_path) 
 
     
-    return render_template('results.html', redacted_files=redacted_files)
+    return render_template('results.html', redacted_files=redacted_files, redacted_text=redacted_text)
 
 
 @app.route('/<filename>')
