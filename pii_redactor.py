@@ -4,6 +4,9 @@ import os
 from dateutil.parser import parse
 import pymupdf as fitz
 
+# Modules for type hinting
+from pymupdf import Page, Rect
+
 class PiiRedactor():
     def __init__(self):
         self.__nlp = spacy.load("en_core_web_trf")
@@ -144,11 +147,17 @@ class PiiRedactor():
 
     ##################### Helper Functions #####################
     
-    def __process_dates(self, nlp_doc) -> list:
+    def __process_dates(self, nlp_doc) -> list[str]:
         """
         Method to process spacy-recognized dates by removing
-        false positives and return a list of true, human-recognizable
+        false positives then returning a list of PII-recognizable
         dates.
+
+        Parameters:
+            nlp_doc: the NLP class containing labeled entities
+        
+        Returns:
+            true_dates: the list of PII dates to redact
         """
         true_dates = []
         RELATIVE_KEYWORDS = [
@@ -162,6 +171,7 @@ class PiiRedactor():
             if not ent.label_ == "DATE":
                 continue
 
+            
             if re.match(r"\b(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day),?\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{2,4})?\b", ent.text, re.M):
                 true_dates.append(ent.text)
                 continue
@@ -178,7 +188,20 @@ class PiiRedactor():
         return true_dates
 
 
-    def __search_for(self, page, search_text):
+    def __search_for(self, page: Page, search_text: str) -> list[Rect]:
+        """
+        Custom `search_for` method mimicking PyMuPDF's own `search_for`
+        method to differentiate redaction of single-word name ("John" or "Doe")
+        vs multi-word name ("John Doe" or "Jane Doe")
+
+        Parameters:
+            page:           The PyMuPDF page class
+            search_text:    The name string to search for
+
+        Returns:
+            rects:          A list of rectangles where the PII names are
+                            located in to be drawn over
+        """
         search_text = search_text.strip()
 
         rects = []
@@ -186,7 +209,9 @@ class PiiRedactor():
 
         split = search_text.split()
 
+        # Determine if name is multi-word
         if len(split) > 1:
+            # Just directly search for it using PyMuPDF's `search_for` method
             rects = page.search_for(search_text)
             
             # Additionally search for full name with honorifics
@@ -198,11 +223,13 @@ class PiiRedactor():
 
             return rects
 
+        # Mimics PyMuPDF's `search_for` functionality by searching through
+        # the words and adding the matchin word's rectangle position to `rects`
         for w in words:
             text = w[4]
             if text == search_text:
                 x0, y0, x1, y1, *_ = w
-                rect = fitz.Rect(x0, y0, x1, y1)
+                rect = Rect(x0, y0, x1, y1)
                 rects.append(rect)
 
         # Additionally search for single-word names with honorifics
@@ -215,19 +242,27 @@ class PiiRedactor():
         return rects
 
 
-    def __draw_redact(self, page_buffer, rect):
+    def __draw_redact(self, page_buffer: Page, rect: Rect):
         """
         Method to draw a rectangular box over given rectangle
         position, then add text on top to show redaction type.
+
+        Parameters:
+            page_buffer:    The PyMuPDF document page
+            rect:           The rectangle object to use its position and size to draw over
         """
         page_buffer.draw_rect(rect, fill=(0,0,0))
 
     ################### Main Class Functions ###################
 
-    def redact_wrapper(self, input_path, output_path):
+    def redact_wrapper(self, input_path: str, output_path: str):
         """
         Wrapper function to execute specific redaction methods
         for files of specific file extensions/types.
+
+        Paramters:
+            input_path:     Path to input file to read and redact
+            output_path:    Path to output file to store redacted file
         """
 
         file_ext = input_path.split(".")[-1]
@@ -239,7 +274,19 @@ class PiiRedactor():
                 self.redact_text(input_path, output_path)
 
 
-    def redact_text(self, input_path, output_path, *, save=True, text=""):
+    def redact_text(self, input_path: str, output_path: str, *, save: bool = True, text: str = "") -> None | str:
+        """
+        Redacts the given text file then store the redacted contents into a new file if `save` is True, else this method will redact the provided text string then returns the redacted text.
+
+        Parameters:
+            input_path:     Path to input file to read and redact
+            output_path:    Path to output file to store redacted contents in
+            save:           Whether to save redacted content or not
+            text:           The text to redact if `save` is False
+
+        Returns:
+            content:        The redacted text content if `save` is False
+        """
         content = ""
 
         if save:
@@ -282,13 +329,21 @@ class PiiRedactor():
                 content = re.sub(p, replace, content, flags=flags)
 
         if not save:
-            return
+            return content
 
         with open(output_path, "w") as file:
             file.write(content)
 
 
-    def redact_pdf(self, input_file, output_file):
+    def redact_pdf(self, input_file: str, output_file: str):
+        """
+        Redacts the given PDF file then saves the redacted content into a new
+        PDF file.
+
+        Parameters:
+            input_file:     Path to input file to read and redact
+            output_file:    Path to output file to store redacted contents in
+        """
         if not input_file.endswith(".pdf"):
             raise Exception("Must be PDF file.")
         
