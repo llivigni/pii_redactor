@@ -1,4 +1,5 @@
 import regex as re
+from pymupdf import Page
 
 class RegexRedactor:
     def __init__(self):
@@ -408,26 +409,28 @@ class RegexRedactor:
         return content
 
 
-    def retrieve_pdf_rects(self, words_text: str) -> list[str]:
-        retrieved_words = []
-
+    def apply_pdf_redaction(self, page: Page, words_text: str):
         for pattern, _, *extra_flags in self.__patterns:
             flags = re.M
 
             for f in extra_flags:
                 flags |= f
 
-            # TODO: do pattern for driver's license (list of patterns)
+            # TODO: do pattern for driver's license which is the only "pattern"
+            #       with a list of patterns
             if isinstance(pattern, list):
                 continue
-            
-            retrieved_words = []
+
             for matched in re.finditer(pattern, words_text, flags=flags):
                 matched_text = matched.group()
 
                 if matched.lastindex:
                     matched_text = matched.group(1)
 
-                retrieved_words.append(matched_text)
+                rects = page.search_for(matched_text)
+                
+                if not rects:
+                    continue
 
-        return retrieved_words
+                for r in rects:
+                    page.draw_rect(r, fill=(0,0,0))

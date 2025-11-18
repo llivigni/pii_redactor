@@ -85,17 +85,12 @@ class PiiRedactor:
             words = page.get_text("words")
             words_text = " ".join( [w[4] for w in words] )
 
+            nlp_doc = self.spacy.create_nlp_doc(words_text)
+
             # Apply regex redaction first
-            rects_to_redact = self.regex.retrieve_pdf_rects(words_text)
-            for rect in rects_to_redact:
-                page.draw_rect(rect, fill=(0,0,0))
+            self.regex.apply_pdf_redaction(page, words_text)
 
             # Then apply Spacy redaction
-            honorifics_pattern = self.regex.get_honorifics_pattern()
-            texts_to_redact = self.spacy.get_texts_to_redact(honorifics_pattern, words_text)
-            for text in texts_to_redact:
-                rects = page.search_for(text)
-                if not rects:
-                    continue
-                for r in rects:
-                    page.draw_rect(r, fill=(0,0,0))
+            self.spacy.apply_pdf_redaction(page, nlp_doc)
+
+        doc.save(output_file, garbage=3, clean=True, deflate=True)
