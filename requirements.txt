@@ -20,8 +20,11 @@ preshed==3.0.10
 pydantic==2.12.4
 pydantic_core==2.41.5
 PyMuPDF==1.26.6
+python-dateutil==2.9.0.post0
+regex==2025.11.3
 requests==2.32.5
 setuptools==80.9.0
+six==1.17.0
 smart_open==7.4.4
 spacy==3.8.8
 spacy-legacy==3.0.12
