@@ -56,16 +56,16 @@ class PiiRedactor:
 
             content = text
 
-        # Apply Spacy redactions first
+        # Apply regex redaction first
+        content = self.regex.redact_text(content)
+
+        # Then apply SpaCy redactions
         honorifics_pattern = self.regex.get_honorifics_pattern()
         content = self.spacy.get_texts_to_redact(honorifics_pattern, content, redact_now=True)
 
         # Datatype checking
         if isinstance(content, list):
             raise Exception("`content` in `PiiRedactor.redact_text()` is somehow a list!")
-
-        # Then apply regex redaction afterwards
-        content = self.regex.redact_text(content)
 
         # Return the redacted text if not saving redacted output
         if not save:
