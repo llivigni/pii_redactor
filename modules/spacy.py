@@ -42,6 +42,8 @@ class SpacyRedactor:
             if not ent.label_ == "DATE":
                 continue
 
+            if re.match(r"\d{4}", ent.text.strip()):
+                continue
             
             if re.match(r"\b(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day),?\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{2,4})?\b", ent.text, re.M):
                 true_dates.append(ent.text)
@@ -114,7 +116,7 @@ class SpacyRedactor:
 
 
     def apply_pdf_redaction(self, page: Page, nlp_doc: Doc):
-        for label, _ in self.__nlp_patterns:
+        for label, replace in self.__nlp_patterns:
             entities = [ ent.text for ent in nlp_doc.ents if ent.label_ == label ] if not label=="DATE" else self.process_dates(nlp_doc)
             
             for e in entities:
@@ -124,16 +126,13 @@ class SpacyRedactor:
                     continue
 
                 for r in rects:
-                    page.draw_rect(r, fill=(0,0,0))
+                    page.draw_rect(r, fill=(0,0,0), overlay=True)
 
 
     def get_texts_to_redact(self, honorifics_pattern: str, text: str, *, redact_now: bool = False) -> list[str] | str:
         texts_to_redact = []
         content = text
         nlp_doc = self.__nlp(text)
-
-        content = content.replace("Mary Malloy", "[NAME]")
-        content = content.replace("John Doe", "[NAME]")
 
         for label, replace in self.__nlp_patterns:
             entities = [ ent.text for ent in nlp_doc.ents if ent.label_ == label ] if not label=="DATE" else self.process_dates(nlp_doc)
@@ -146,11 +145,9 @@ class SpacyRedactor:
                     
                     if redact_now:
                         content = re.sub(honor_pattern, replace, content, flags=flags)
-                        continue
-
-                    honor_matches = re.findall(honor_pattern, text, flags=re.M | re.IGNORECASE)
-                    texts_to_redact.extend(honor_matches)
-                    continue
+                    else:
+                        honor_matches = re.findall(honor_pattern, text, flags=re.M | re.IGNORECASE)
+                        texts_to_redact.extend(honor_matches)
 
                 
                 if redact_now:
