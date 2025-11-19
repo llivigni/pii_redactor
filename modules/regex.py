@@ -17,9 +17,6 @@ class RegexRedactor:
             ( r'\b(?:Email Login|Email Username|Office365 Login|Google Login|School Login Email|Office 365 Login)\b\s*[:#=.–—-]?\s*[A-Za-z0-9_.-]{3,40}', "[EMAIL LOGIN]", re.IGNORECASE ),
             ( r'(?<=login id\s*[:\-]?\s*)[A-Za-z0-9._-]+', "[LOGIN ID]", re.IGNORECASE ),
 
-            # Accounts
-            #( r'(?<=account\s*[:\-]?\s*)[A-Za-z0-9._-]+', "[ACCOUNT]", re.IGNORECASE ),
-
             # Email Addresses 
             # [a-zA-Z0-9_.+-]+ - Repeated one or more times: Any lowercase/capital letter, number, underscore, period, plus sign, and dash
             # @ - Symbol splitting local part and domain 
@@ -35,31 +32,42 @@ class RegexRedactor:
             ( r"(?i)\b((?:https?:(?:/{1,3}|[a-z0-9%])|[a-z0-9.\-]+[.](?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)/)(?:[^\s()<>{}\[\]]+|\([^\s()]*?\([^\s()]+\)[^\s()]*?\)|\([^\s]+?\))+(?:\([^\s()]*?\([^\s()]+\)[^\s()]*?\)|\([^\s]+?\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’])|(?:(?<!@)[a-z0-9]+(?:[.\-][a-z0-9]+)*[.](?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)\b/?(?!@)))", "[URL]", re.IGNORECASE ),
 
             # PO Box
-            ( r'\b(?:P\.?\s*O\.?\s*(?:Box|Bin)|Post\s+Office\s+(?:Box|Bin)|(?:Box|Bin)\s*#?\s*\d+|#\s*\d+|Number\s*\d+)\b', "[PO BOX]", re.IGNORECASE ),
+            ( r'\b(?:P\.?\s*O\.?\s*(?:Box|Bin)|Post\s+Office\s+(?:Box|Bin)|(?:Box|Bin)\s*#?\s*\d+|#\s*\d+)\b', "[PO BOX]", re.IGNORECASE ),
 
             # Health Insurance Policy/Member numbers
-            ( r'(?:Policy No|Policy Number|Policy ID|Member #|Subscriber No|Coverage ID|Insurance #|Group ID|Plan ID|Plan #|Member ID|Policy #|Subscriber ID|Group #|Group Number|Insurance ID|Coverage #)\s*[:\-]?\s*[A-Za-z0-9- _/.]{4,20}', "[HEALTH INSURANCE #]", re.IGNORECASE ),
+            ( r'(?:Policy No|Policy Number|Policy ID|Member #|Subscriber No|Coverage ID|Insurance #|Group ID|Plan ID|Plan #|Member ID|Policy #|Subscriber ID|Group #|Group Number|Insurance ID|Coverage #|Policy Reference|Policy Ref)\s*[:\-]?\s*[A-Za-z0-9-_/.]{4,20}', "[HEALTH INSURANCE #]", re.IGNORECASE ),
 
             # Routing Number
-            ( r'(?<=\b(?:routing|aba|rtn)(?:\s+number)?\s*[:\-]?\s*)\d{9}\b', "[ROUTING #]", re.IGNORECASE ),
+            (
+                r'\b(?:routing|aba|rtn)(?:\s+number)?\b[^0-9]{0,40}(\d{9})\b',
+                "[ROUTING #]",
+                re.IGNORECASE
+            ),
 
             # Bank Account Info
-            ( r'(?:Account Number|Account #|Acct No|Acct #|Bank Account|Checking Account|Savings Acct|Account|Acct|Savings Account|Account Num|Acct Num|Acct Number|A/C No|A/C|ACCT#|AccountNo)\s*[:.\-]?\s*[-0-9_/ .A-Za-z]{6,17}', "[BANK ACCOUNT]", re.IGNORECASE ),
+            ( r'(?:Account Number|Account #|Acct No|Acct #|Bank Account|Savings Acct|Acct|Savings Account|Account Num|Acct Num|Acct Number|A/C No|A/C|ACCT#|AccountNo)\s*[:\.-]?\s*[0-9_/ .A-Za-z]{6,17}', "[BANK ACCOUNT]", re.IGNORECASE ),
 
             # GPS Coordinate
-            ( r'(?:Lat|Lon|Lat/Lon|Latitude|Longitude|Long|Lat-Log|Lat-Lon|GPS|GPS COORDINATES|Lat/Long)\s*[,:.\-]?\s*[+-]?\d{1,3}\.\d+\s*[NESW]?(?:\s*[, ]\s*[+-]?\d{1,3}\.\d+\s*[NESW]?)?', "[COORDINATE]", re.IGNORECASE ),
+            ( r'(?:Lat|Lon|Lat/Lon|Latitude|Longitude|Long|Lat-Log|Lat-Lon|GPS|GPS COORDINATES|Lat/Long)\s*[,:.\-]?\s*[+-]?\d{1,3}\.\d+[NESW]?(?:\s*[, ]\s*[+-]?\d{1,3}\.\d+[NESW]?)?', "[COORDINATE]", re.IGNORECASE ),
 
             # GPS Device ID
             ( r'\b(?:GPS ID|GPS Device ID|GPS Tracker ID|Tracking Device Number|Location Tracker ID|Unit ID)\b\s*[:#=.–—-]?\s*[A-Za-z0-9_.-]{4,40}', "[GPS DEVICE]", re.IGNORECASE ),
 
             # Employment ID
-            ( r'\b(?:Employee Number|Employee #|Employee No|Employee ID|Worker ID|Worker Number|Staff ID|Staff Number|Staff #|HR ID|Payroll ID|Payroll Number|Pay ID|Badge Number|Badge #|Contractor ID|Vendor ID|Associate ID|Operator ID)\b\s*[:#=.–—-]?\s*[0-9]{3,9}', "[EMPLOYMENT]", re.IGNORECASE ),
+            ( r'\b(?:Employee Number|Employee #|Employee No|Employee ID|Worker ID|Worker Number|Staff ID|Staff Number|Staff #|HR ID|Payroll ID|Payroll Number|Pay ID|Badge Number|Badge #|Contractor ID|Vendor ID|Associate ID|Operator ID)\b\s*[:#=.–—-]?\s*[0-9]{3,9}', "[EMPLOYMENT #]", re.IGNORECASE ),
 
             # Employment Role
             ( r'\b(?:Job Title|Position Title|Role Title|Position|Job Level|Job Code|Employee Level|Band|Pay Grade|Pay Band|Department|Division|Team|Cost Center|Reporting To|Reports To|Supervisor|Supervisor Name|Manager|Manager Name|Direct Manager|Line Manager)\b\s*[:#=.–—-]?\s*[A-Za-z0-9\s&/.-]{3,40}', "[EMPLOYMENT ROLE]", re.IGNORECASE ),
 
             # Employment Evaluation Performance
-            ( r'\b(?:Performance Rating|Performance Score|Performance Evaluation|Evaluation Rating|Evaluation Score|Review Rating|Review Score|Performance Review|Appraisal Rating|Appraisal Score|Goal Completion|KPI Score|KPI Rating|Objective Score|Performance Band|Performance Level)\b\s*[:#=.–—-]?\s*[A-Za-z0-9\s%/.-]{3,40}', "[EMPLOYMENT EVALUATION]", re.IGNORECASE ),
+            (
+                r'\b(?:Performance Rating|Performance Score|Performance Evaluation|Evaluation Rating|Evaluation Score|Review Rating|Review Score|Performance Review|Appraisal Rating|Appraisal Score|Goal Completion|KPI Score|KPI Rating|Objective Score|Performance Band|Performance Level)\b'
+                r'[^0-9]{0,10}'                    # allow " was ", " is ", " : "
+                r'([0-9]+(?:\.[0-9]+)?)'           # the score (e.g. 4.7)
+                r'(?:\s*out of\s*[0-9]+)?',        # optional "out of 5"
+                "[EMPLOYMENT EVALUATION]",
+                re.IGNORECASE
+            ),
 
             # Employment Status
             ( r'\b(?:Employment Status|Job Status|Employee Status|Work Status|Full-Time/Part-Time|FTE Status|Contract Type|Contract Status|Termination Reason|Separation Reason|Termination Type)\b\s*[:#=.–—-]?\s*[A-Za-z\s/-]{3,30}', "[EMPLOYMENT STATUS]", re.IGNORECASE ),
@@ -80,13 +88,17 @@ class RegexRedactor:
             ( r'\b(?:SAT Score|ACT Score|GRE Score|GMAT Score|LSAT Score|MCAT Score|TOEFL Score|IELTS Score|Standardized Test Score|Entrance Exam Score|Admission Test Score)\b\s*[:#=.–—-]?\s*[0-9.]{2,5}', "[TEST SCORE]", re.IGNORECASE ),
 
             # Education ID
-            ( r'\b(?:Student Number|Student #|Student No|Student ID|Campus ID|Campus-Wide ID|Banner ID|School ID|College ID|University ID|Enrollment ID|CWID|Registration ID|Applicant ID|Application Number|Candidate ID)\b\s*[:#=.–—-]?\s*[A-Z0-9]{3,10}', "[EDUCATION ID]", re.IGNORECASE ),
+            ( r'\b(?:Student Number|Student #|Student No|Student ID|Campus ID|Campus-Wide ID|Banner ID|School ID|College ID|University ID|Enrollment ID|CWID|Registration ID|Applicant ID|Application Number|Candidate ID)\b(?:\s*[:#=.–—-]\s+)[A-Z0-9]{3,10}', "[EDUCATION ID]", re.IGNORECASE ),
 
             # Generic Record ID
-            ( r'\b(?:Employee ID|Emp ID|Staff ID|Badge #|ID Badge|Student ID|Campus ID|Banner ID|TTU ID|Customer ID|Client ID|User ID|Member ID|Login ID|ID #|ID Number|Record ID|Profile ID)\b\s*[#:.\-]?\s*[a-zA-Z0-9_-]{4,15}', "[GENERIC ID]", re.IGNORECASE ),
+            (
+                r'\b(?:Employee ID|Emp ID|Staff ID|Badge #|ID Badge|Banner ID|TTU ID|Customer ID|Client ID|User ID|Member ID|Login ID|ID #|ID Number|Record ID|Profile ID)\b\s*[#:.\-]?\s*[a-zA-Z0-9_-]{4,15}',
+                "[GENERIC ID]",
+                re.IGNORECASE
+            ),
 
             # Tax Identifier Number
-            ( r'\b(?:EIN|Employer ID|Employer Identification Number|Federal Tax ID|Tax ID|Tax Number|TIN|Business Tax ID|Company Tax ID)\b\s*[:#=.–—-]?\s*[0-9]{2}-[0-9]{7}', "[TIN]", re.IGNORECASE ),
+            ( r"\b[0-9]{2}-[0-9]{7}\b", "[TIN]" ),
 
             # License Keys
             ( r'\b(?:License Key|Product Key|Software Key|Activation Key|Registration Key|Serial Key|Serial Code)\b\s*[:#=.–—-]?\s*[A-Za-z0-9_.-]{5,40}', "[LICENSE KEY]", re.IGNORECASE ),
@@ -98,7 +110,7 @@ class RegexRedactor:
             ( r'\b(?:FAFSA ID|Aid ID|Award ID|Loan Servicer ID|Student Aid Number|Federal School Code)\b\s*[:#=.–—-]?\s*[A-Za-z0-9]{3,12}', "[FINANCIAL AID ID]", re.IGNORECASE ),
 
             # Financial Identifiers
-            ( r'\b(?:Loan Number|Loan #|Loan ID|Mortgage Number|Mortgage ID|Loan Account|Mortgage Account|Claim Number|Claim #|Claim ID|Case ID|Contract Number|Contract #|Agreement Number|Agreement #|Policy Reference|Policy Ref|Billing Account Number|Billing ID|Reference Number|Ref #|Customer Number)\b\s*[:#=.–—-]?\s*[0-9A-Za-z_/.\\-]{6,25}', "[FINANCIAL ID]", re.IGNORECASE ),
+            ( r'\b(?:Loan Number|Loan #|Loan ID|Mortgage Number|Mortgage ID|Loan Account|Mortgage Account|Claim Number|Claim #|Claim ID|Case ID|Contract Number|Contract #|Agreement Number|Agreement #|Billing Account Number|Billing ID|Reference Number|Ref #|Customer Number)\b\s*[:#=.–—-]?\s*[0-9A-Za-z_/.\\-]{6,25}', "[FINANCIAL ID]", re.IGNORECASE ),
 
             # NPI
             ( r'\b(?:NPI|NPI Number|NPI #|NPI ID|NPI No)\b\s*[:#=.–—-]?\s*[0-9]{10}', "[NPI]", re.IGNORECASE ),
@@ -110,7 +122,7 @@ class RegexRedactor:
             ( r'\b(?:Medical License|Nursing License|RN License|LPN License|NP License|PA License|Physician License|Provider License|Provider ID|Practitioner ID|State License|License #|License Number|Bar Number|Bar License|Attorney ID|Attorney Number|Professional ID|Certification ID|Registry ID)\b\s*[:#=.–—-]?\s*[A-Za-z0-9-]{5,15}', "[LICENSE ID]", re.IGNORECASE ),
 
             # IMEI
-            ( r'\b(?:IMEI|IMEI Number|IMEI No|IMEI #|Device IMEI|Phone IMEI|IMEI ID)\b\s*[:#=.–—-]?\s*[0-9]{14,15}', "[IMEI]", re.IGNORECASE ),
+            ( r'(?i)(?<=IMEI.{0,100})[0-9]{14,15}', "[IMEI]", re.IGNORECASE ),
 
             # IMSI
             ( r'\b(?:IMSI|IMSI Number|IMSI #|IMSI No|Subscriber IMSI)\b\s*[:#=.–—-]?\s*[0-9]{15}', "[IMSE]", re.IGNORECASE ),
@@ -138,6 +150,14 @@ class RegexRedactor:
 
             # Demographic
             ( r"\b(?:Gender|Sex|Sex at Birth|Assigned Sex at Birth|Gender Identity|Race|Ethnicity|Race/Ethnicity|Ethnic Group|Ethnic Background|Marital Status|Relationship Status|Spouse Name|Partner Name|Number of Dependents|Religion|Religious Affiliation|Faith|Religious Preference|Sexual Orientation|Disabled|Veteran with Disability|Special Needs|Accommodation Needed|Medical Condition|Citizenship|Citizenship Status|Immigration Status|Visa Status|Work Authorization|Disability|Disability Status)\b\s[:#=.–—-]?\s[A-Za-z0-9\s-]{3,40}", "[DEMOGRAPHIC]", re.IGNORECASE ),
+
+            # Shipping Fulfillment ID (label + value, with natural language in between)
+            (
+                r'\b(?:Warehouse ID|Fulfillment ID|Fulfillment Center ID|Shipment Batch|Container Number|Pallet ID|Bin Number|Rack Number|Storage Location ID)\b'
+                r'[^A-Za-z0-9]{0,40}([A-Za-z0-9._\-]{3,20})',
+                "[SHIPPING ID]",
+                re.IGNORECASE
+            ),
 
             # Tracking Number
             ( r'\b(?:Tracking Number|Tracking #|USPS Tracking Number|UPS Tracking Number|FedEx Tracking Number|DHL Tracking ID|Generic Tracking #|Shipment ID|Package ID|Parcel ID)\b\s*[:#=.–—-]?\s*[A-Za-z0-9_.-]{5,40}', "[TRACKING #]", re.IGNORECASE ),
@@ -189,13 +209,13 @@ class RegexRedactor:
             ( r'\b(?:Alien Registration Number|Alien Number|A-Number|A Number|USCIS Case Number|USCIS Receipt Number|Receipt Number|Immigration Case Number|Visa Number|Visa No|Green Card Number|Green Card No|Naturalization Certificate Number|Naturalization Number|Citizenship Certificate Number|Passport Application Number)\b\s*[:#=.–—-]?\s*[A-Za-z0-9]{8,16}', "[IMMIGRATION CITIZENSHIP]", re.IGNORECASE ),
 
             # Bitcoin Address
-            ( r'\b(?:Bitcoin Address|BTC Address|BTC Wallet|Bitcoin Wallet|BTC Deposit Address|Bitcoin Deposit Address)\b\s*[:#=.–—-]?\s*(?:[13][a-km-zA-HJ-NP-Z1-9]{25,34}|bc1[0-9ac-hj-np-z]{11,71})', "[BITCOIN ADDRESS]", re.IGNORECASE ),
+            ( r'\b(?:[13][a-km-zA-HJ-NP-Z1-9]{25,34}|bc1[0-9ac-hj-np-z]{11,71})\b', "[BITCOIN ADDRESS]" ),
 
             # Ethereum Address
             ( r'\b(?:Ethereum Address|ETH Address|ERC20 Address|ERC-20 Address|Token Address|Contract Address|Wallet Address|Crypto Address)\b\s*[:#=.–—-]?\s*0[xX][0-9a-fA-F]{40}', "[ETH ADDRESS]", re.IGNORECASE ),
 
             # Solana Address
-            ( r'\b(?:Solana Address|SOL Address|Solana Wallet|SOL Wallet|Solana Public Key|SOL Public Key)\b\s*[:#=.–—-]?\s*[A-HJ-NP-Za-km-z1-9]{32,44}', "[SOL ADDRESS]", re.IGNORECASE ),
+            ( r'\b0[xX][0-9a-fA-F]{40}\b', "[ETH ADDRESS]" ),
 
             # Ripple Address
             ( r'\b(?:XRP Address|Ripple Address|XRP Wallet|Ripple Wallet|XRP Account|Ripple Account|XRP Deposit Address)\b\s*[:#=.–—-]?\s*r[1-9A-HJ-NP-Za-km-z]{24,34}', "[XRP ADDRESS]", re.IGNORECASE ),
@@ -216,13 +236,24 @@ class RegexRedactor:
             ( r'\b(?:Device Fingerprint|Fingerprint ID|FingerprintID|Browser ID|BrowserID|Device ID Hash|Device Hash|Machine Fingerprint|Client Fingerprint|Device Signature|Browser Signature)\b\s*[:#=.–—-]?\s*[A-Za-z0-9._\-]{16,128}', "[BROWSER FINGERPRINT]", re.IGNORECASE ),
 
             # UUID/GUID
-            ( r'\b(?:UUID|GUID|Unique ID|Unique Identifier|Global ID|Transaction UUID|Request UUID|Session UUID)\b\s*[:#=.–—-]?\s*[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', "[UUID/GUID]", re.IGNORECASE ),
+            ( r'\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b', "[UUID/GUID]" ),
 
             # Hash Values
             ( r'\b(?:Hash|Hash Value|Checksum|Digest|MD5|SHA1|SHA-1|SHA256|SHA-256|SHA512|SHA-512|Integrity Hash|File Hash|Verification Hash)\b\s*[:#=.–—-]?\s*(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{40}|[0-9a-fA-F]{64}|[0-9a-fA-F]{128})', "[HASHSUM]", re.IGNORECASE ),
 
             # User Agent ID
-            ( r'\b(?:User Agent|User-Agent|Browser Agent|Client Agent|Device Agent|Device Info|Browser Info|UA String)\b\s*[:#=.–—-]?\s*[A-Za-z0-9\s().;/_:-]{10,300}', "[USER AGENT ID]", re.IGNORECASE ),
+            (
+                r'\b(?:User Agent|User-Agent|Browser Agent|Client Agent|Device Agent|Device Info|Browser Info|UA String)\b'
+                r'[^\r\n]*?(?:\n\s*|:\s*)([^\r\n]{10,300})',
+                "[USER AGENT ID]",
+                re.IGNORECASE
+            ),
+
+            # Standalone host/computer name (e.g., LAPTOP-JSMITH2)
+( r'\b(?:LAPTOP|DESKTOP|WORKSTATION|PC|MAC|IMAC|MBP|HP|DELL)[-_][A-Za-z0-9]{3,20}\b', "[DEVICE ID]", re.IGNORECASE ),
+
+            # AWS Key
+            ( r'\b(?:AKIA|ASIA|AGPA|AIDA|ANPA)[0-9A-Z]{16}\b', "[CLOUD KEY]" ),
 
             # Cloud Key
             ( r'\b(?:AWS Access Key|AWS Secret Key|AWS Key|AWS Credentials|AWS Secret Access Key|AWS AccessKey|AWS SecretAccessKey|Azure Client Secret|Azure Secret|Azure Key|GCP Service Key|GCP API Key|Google Cloud Key|Cloud API Key)\b\s*[:#=.–—-]?\s*(?:AKIA[0-9A-Z]{16}|[A-Za-z0-9_\-+/=]{20,200})', "[CLOUD KEY]", re.IGNORECASE ),
@@ -251,8 +282,16 @@ class RegexRedactor:
             # Financial Metadata
             ( r'\b(?:Routing Code|SWIFT Code|BIC Code|Bank Code|Branch Code|Sort Code|Tax Code|EFT Code|ACH Code)\b\s*[:#=.–—-]?\s*(?:[A-Z0-9]{8,11}|[0-9]{2}-?[0-9]{2}-?[0-9]{2})', "[FINANCIAL METADATA]", re.IGNORECASE ),
 
-            # Shipping Fulfillment ID
-            ( r'\b(?:Warehouse ID|Fulfillment ID|Fulfillment Center ID|Shipment Batch|Container Number|Pallet ID|Bin Number|Rack Number|Storage Location ID)\b\s*[:#=.–—-]?\s*[A-Za-z0-9._\-]{3,20}', "[SHIPPING ID]", re.IGNORECASE ),
+            # Shipping Fulfillment ID (label + value, with natural language in between)
+            (
+                r'\b(?:Warehouse ID|Fulfillment ID|Fulfillment Center ID|Shipment Batch|Container Number|Pallet ID|Bin Number|Rack Number|Storage Location ID)\b'
+                r'[^A-Za-z0-9]{0,40}([A-Za-z0-9._\-]{3,20})',
+                "[SHIPPING ID]",
+                re.IGNORECASE
+            ),
+
+            # Standalone warehouse / pallet / bin codes
+            ( r'\b(?:WH|BIN|PLT|RACK)[-_][A-Z0-9]{3,6}\b', "[SHIPPING ID]", re.IGNORECASE ),
 
             # Employer Internal Codes
             ( r'\b(?:Cost Center|Cost Center Code|Dept Code|Department Code|Org Code|Business Unit Code|Location Code|Office Code|Work Unit Code)\b\s*[:#=.–—-]?\s*[A-Za-z0-9._\-]{3,20}', "[INTERNAL EMPLOYMENT CODE]", re.IGNORECASE ),
@@ -270,6 +309,9 @@ class RegexRedactor:
             # Passport
             ( r'\b(?:Loan Number|Loan #|Loan ID|Mortgage Number|Mortgage ID|Loan Account|Mortgage Account|Claim Number|Claim #|Claim ID|Case ID|Contract Number|Contract #|Agreement Number|Agreement #|Policy Reference|Policy Ref|Billing Account Number|Billing ID|Reference Number|Ref #|Customer Number)\b\s*[:#=.–—-]?\s*[0-9A-Za-z_/.\\-]{6,25}', "[PASSPORT #]", re.IGNORECASE ),
             ( r'passport.*?[A-Z]{1}[0-9]{8}', "[PASSPORT #]", re.IGNORECASE ),
+
+            # UPS-style tracking IDs
+            ( r'\b1Z[0-9A-Z]{16}\b', "[TRACKING #]", re.IGNORECASE ),
 
             # Vehicle Identifier Number
             ( r'\b(?:Reg Number|Tag #|Registration #|License Plate|License Plate Number|Plate #|Vehicle ID|Vehicle Number|Fleet ID|Tag Number|Registration Number)\b\s*[:#=.–—-]?\s*[A-Za-z0-9_.-]{5,40}', "[VIN]", re.IGNORECASE ),
@@ -289,7 +331,18 @@ class RegexRedactor:
             # [0-9]{3} - Exactly 3 numbers in range of 0-9
             # [-\s]? - Can choose one or none of the symbols (dash or space) to go in between groupings of numbers
             # [0-9]{4} - Exactly 4 numbers in range of 0-9
-            ( r'\(?[0-9]{3}\)?[-\s]?[0-9]{3}[-\s]?[0-9]{4}', "[PHONE]" ),
+            ( r'\b\(?[0-9]{3}\)?[-\s]?[0-9]{3}[-\s]?[0-9]{4}\b', "[PHONE]" ),
+
+            (
+                r'\b(?:Account Number|Account #|Acct No|Acct #|Bank Account|Checking Account|Savings Account|Savings Acct|Account)\b'
+                r'[^0-9]{0,40}([0-9]{6,17})\b',
+                "[BANK ACCOUNT]",
+                re.IGNORECASE
+            ),
+            (
+                r'\b[0-9]{10,17}\b',
+                "[BANK ACCOUNT]"
+            ),
 
             # Social Security Number
             # [0-9]{3} - Exactly 3 numbers in range of 0-9
@@ -309,23 +362,16 @@ class RegexRedactor:
             # [0-9]{4} - Exactly 4 numbers in range of 0-9
             ( r'[0-9]{4}[\s][0-9]{4}[\s][0-9]{4}[\s][0-9]{4}', "[CREDIT/DEBIT CARD]" ),
 
-            # Bank Account Number
-            # [0-9]{9} - Exactly 9 numbers in range of 0-9
-            ( r'[0-9]{6,17}', "[BANK ACCOUNT]" ),
-
             # Addresses 
             # [0-9]{1,5} - 1 to 5 numbers in the range of 0-9
             # [\sA-Za-z]+,\s - Matches one or more letters or whitespace, then a comma followed by a whitespace
             # [\sA-Za-z]+,\s - Matches one or more letters or whitespace, then a comma followed by a whitespace
             # [A-Z]{2}\s - Matches the state, two capital letters
             # [0-9]{5} - Matches the zip code, five numbers in range of 0-9
-            ( r'[0-9]{1,5} [\sA-Za-z]+,\s[\sA-Za-z]+,\s[A-Z]{2}\s[0-9]{5}', "[ADDRESS]" ),
+            ( r'\b\d{3,6}\s+(?:\w+\s+){1,4}(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Ct|Court|Pl|Place|Way|Pkwy|Parkway|Cir|Circle)\b', "[ADDRESS]", re.IGNORECASE ),
 
             # Zip Code (lookbehind pattern)
-            ( r'(?<=zip(?: code)?\s*[:\-]?\s*)\d{5}(?:-\d{4}|\s?\d{4})?', "[ZIP CODE]", re.IGNORECASE ),
-
-            # Zip Code
-            ( r'\b\d{5}(?:-\d{4}|\s?\d{4})?\b', "[ZIP CODE]" ),
+            ( r'(?<!ERR-)\b\d{5}(?:-\d{4}|\s\d{4})?\b', "[ZIP CODE]" ),
 
             # IPV4 Address
             ( r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}', "[ipv4]" ),
@@ -337,7 +383,7 @@ class RegexRedactor:
             ( r'[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}:[0-9A-Z]{2}', "[MAC]" ),
 
             # General License Plate
-            ( r'[A-Z]{3}-*\d{4}', "[LICENSE PLATE #]" ),
+            ( r'(?<!ERR-)\b[A-Z]{3}-?\d{4}\b', "[LICENSE PLATE #]" ),
             
             # Generic Student ID
             ( r'[A-Z]{1}[0-9]{6,8}', "[STUDENT #]" ),
@@ -410,7 +456,7 @@ class RegexRedactor:
 
 
     def apply_pdf_redaction(self, page: Page, words_text: str):
-        for pattern, _, *extra_flags in self.__patterns:
+        for pattern, replace, *extra_flags in self.__patterns:
             flags = re.M
 
             for f in extra_flags:
@@ -422,10 +468,8 @@ class RegexRedactor:
                 continue
 
             for matched in re.finditer(pattern, words_text, flags=flags):
-                matched_text = matched.group()
-
-                if matched.lastindex:
-                    matched_text = matched.group(1)
+                matched_text = matched.group(matched.lastindex) if matched.lastindex else matched.group()
+                matched_text = matched_text.strip()
 
                 rects = page.search_for(matched_text)
                 
@@ -433,4 +477,4 @@ class RegexRedactor:
                     continue
 
                 for r in rects:
-                    page.draw_rect(r, fill=(0,0,0))
+                    page.draw_rect(r, fill=(0,0,0), overlay=True)
