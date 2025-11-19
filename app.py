@@ -36,10 +36,11 @@ def upload_files():
 
         output_path = os.path.join(app.config['RESULT_PATH'], 'text_input_redacted.txt') 
 
-        pii_redactor(text_input_file_path, output_path)
+        print(text_input)
+        redacted_text = redactor.redact_text("", "", save=False, text=text_input)
 
-        with open(output_path, 'r', encoding='utf-8') as file:
-            redacted_text = file.read()
+        #with open(output_path, 'r', encoding='utf-8') as file:
+        #    redacted_text = file.read()
 
 
     # Upload multiple files
