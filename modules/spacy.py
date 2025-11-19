@@ -9,7 +9,8 @@ class SpacyRedactor:
         self.__nlp = spacy.load("en_core_web_trf")
         self.__nlp_patterns = [
             ("PERSON", "[NAME]"),
-            ("DATE", "[DATE]")
+            ("DATE", "[DATE]"),
+            ("GPE", "[GPE]")
         ]
 
         self.__honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Mx", "Dr" ]
