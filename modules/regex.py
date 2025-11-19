@@ -62,10 +62,10 @@ class RegexRedactor:
             ( r'\b(?:Performance Rating|Performance Score|Performance Evaluation|Evaluation Rating|Evaluation Score|Review Rating|Review Score|Performance Review|Appraisal Rating|Appraisal Score|Goal Completion|KPI Score|KPI Rating|Objective Score|Performance Band|Performance Level)\b\s*[:#=.–—-]?\s*[A-Za-z0-9\s%/.-]{3,40}', "[EMPLOYMENT EVALUATION]", re.IGNORECASE ),
 
             # Employment Status
-            ( r'\b(?:Employment Status|Job Status|Status|Employee Status|Work Status|Full-Time/Part-Time|FTE Status|Contract Type|Contract Status|Termination Reason|Separation Reason|Termination Type)\b\s*[:#=.–—-]?\s*[A-Za-z\s/-]{3,30}', "[EMPLOYMENT STATUS]", re.IGNORECASE ),
+            ( r'\b(?:Employment Status|Job Status|Employee Status|Work Status|Full-Time/Part-Time|FTE Status|Contract Type|Contract Status|Termination Reason|Separation Reason|Termination Type)\b\s*[:#=.–—-]?\s*[A-Za-z\s/-]{3,30}', "[EMPLOYMENT STATUS]", re.IGNORECASE ),
 
             # Academic Transcript ID
-            ( r'\b(?:Transcript Number|Record Number|Academic Record ID|Report ID)\b\s*[:#=.–—-]?\s*[0-9]{3,7}', "[TRANSCRIPT ID]", re.IGNORECASE ),
+            ( r'\b(?:Transcript Number|Academic Record ID|Report ID)\b\s*[:#=.–—-]?\s*[0-9]{3,7}', "[TRANSCRIPT ID]", re.IGNORECASE ),
 
             # Grades Score
             ( r'\b(?:Grade|Final Grade|Course Grade|Letter Grade|Exam Grade|Test Grade|Quiz Grade|Assignment Grade|Midterm Grade|Final Exam Grade|Score|Test Score|Exam Score|Quiz Score|Assignment Score|Final Score|Overall Score|Percentage|Percent Score|Percent Grade)\b\s*[:#=.–—-]?\s*[A-Za-z0-9+\-%.\s]{1,10}', "[ACADEMIC GRADES]", re.IGNORECASE ),

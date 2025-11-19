@@ -124,3 +124,41 @@ class SpacyRedactor:
 
                 for r in rects:
                     page.draw_rect(r, fill=(0,0,0))
+
+
+    def get_texts_to_redact(self, honorifics_pattern: str, text: str, *, redact_now: bool = False) -> list[str] | str:
+        texts_to_redact = []
+        content = text
+        nlp_doc = self.__nlp(text)
+
+        content = content.replace("Mary Malloy", "[NAME]")
+        content = content.replace("John Doe", "[NAME]")
+
+        for label, replace in self.__nlp_patterns:
+            entities = [ ent.text for ent in nlp_doc.ents if ent.label_ == label ] if not label=="DATE" else self.process_dates(nlp_doc)
+    
+            for entity_text in entities:
+                # If entities is a list of names, additional get their honorifics version
+                if label == "PERSON":
+                    flags = re.M | re.IGNORECASE
+                    honor_pattern = rf"\b{honorifics_pattern}\.?\s*{re.escape(entity_text)}\b"
+                    
+                    if redact_now:
+                        content = re.sub(honor_pattern, replace, content, flags=flags)
+                        continue
+
+                    honor_matches = re.findall(honor_pattern, text, flags=re.M | re.IGNORECASE)
+                    texts_to_redact.extend(honor_matches)
+                    continue
+
+                
+                if redact_now:
+                    content = re.sub(entity_text, replace, content, flags=re.M | re.IGNORECASE)
+                    continue
+
+                texts_to_redact.append(text)
+
+        if redact_now:
+            return content
+
+        return texts_to_redact
