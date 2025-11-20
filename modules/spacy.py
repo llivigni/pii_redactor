@@ -136,7 +136,8 @@ class SpacyRedactor:
 
         for label, replace in self.__nlp_patterns:
             entities = [ ent.text for ent in nlp_doc.ents if ent.label_ == label ] if not label=="DATE" else self.process_dates(nlp_doc)
-    
+            
+            print(label, entities)
             for entity_text in entities:
                 # If entities is a list of names, additional get their honorifics version
                 if label == "PERSON":
@@ -151,7 +152,7 @@ class SpacyRedactor:
 
                 
                 if redact_now:
-                    content = re.sub(entity_text, replace, content, flags=re.M | re.IGNORECASE)
+                    content = re.sub(rf"\b{re.escape(entity_text)}\b", replace, content, flags=re.M | re.IGNORECASE)
                     continue
 
                 texts_to_redact.append(text)
