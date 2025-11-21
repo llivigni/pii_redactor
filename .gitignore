@@ -1,0 +1,8 @@
+# Ignore cached Python files
+**/*/__pycache__/
+
+# Do not store redacted results.
+results/*
+
+# Ignore default-named Python virtual environment
+venv/
