@@ -23,13 +23,13 @@ class RegexRedactor:
             # [a-zA-Z0-9-]+ - Repeated one or more times: Any lowercase/capital letter, number, and dash
             # \. - Matches one period
             # [a-zA-Z0-9-.]+ - Repeated one or more times: Any lowercase/capital letter, number, and dash
-            ( r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', "[EMAIL]" ),
+            ( r'[a-zA-Z0-9_.+-]+\s*(?:@|\[at\])\s*[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', "[EMAIL]" ),
 
             # Social Handle
             ( r'@[A-Za-z0-9._-]+', "[SOCIAL MEDIA]" ),
 
             # Web URL
-            ( r"(?i)\b((?:https?:(?:/{1,3}|[a-z0-9%])|[a-z0-9.\-]+[.](?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)/)(?:[^\s()<>{}\[\]]+|\([^\s()]*?\([^\s()]+\)[^\s()]*?\)|\([^\s]+?\))+(?:\([^\s()]*?\([^\s()]+\)[^\s()]*?\)|\([^\s]+?\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’])|(?:(?<!@)[a-z0-9]+(?:[.\-][a-z0-9]+)*[.](?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)\b/?(?!@)))", "[URL]", re.IGNORECASE ),
+            ( r'\b(?:https?://|www\.)[^\s]+|\b[a-z0-9.-]+\.(?:com|net|org|edu|gov)\b', "[URL]", re.IGNORECASE ),
 
             # PO Box
             ( r'\b(?:P\.?\s*O\.?\s*(?:Box|Bin)|Post\s+Office\s+(?:Box|Bin)|(?:Box|Bin)\s*#?\s*\d+|#\s*\d+)\b', "[PO BOX]", re.IGNORECASE ),
@@ -57,7 +57,7 @@ class RegexRedactor:
             ( r'\b(?:Employee Number|Employee #|Employee No|Employee ID|Worker ID|Worker Number|Staff ID|Staff Number|Staff #|HR ID|Payroll ID|Payroll Number|Pay ID|Badge Number|Badge #|Contractor ID|Vendor ID|Associate ID|Operator ID)\b\s*[:#=.–—-]?\s*[0-9]{3,9}', "[EMPLOYMENT #]", re.IGNORECASE ),
 
             # Employment Role
-            ( r'\b(?:Job Title|Position Title|Role Title|Position|Job Level|Job Code|Employee Level|Band|Pay Grade|Pay Band|Department|Division|Team|Cost Center|Reporting To|Reports To|Supervisor|Supervisor Name|Manager|Manager Name|Direct Manager|Line Manager)\b\s*[:#=.–—-]?\s*[A-Za-z0-9\s&/.-]{3,40}', "[EMPLOYMENT ROLE]", re.IGNORECASE ),
+            #( r'\b(?:Job Title|Position Title|Role Title|Position|Job Level|Job Code|Employee Level|Band|Pay Grade|Pay Band|Department|Division|Team|Cost Center|Reporting To|Reports To|Supervisor|Supervisor Name|Manager|Manager Name|Direct Manager|Line Manager)\b\s*[:#=.–—-]?\s*[A-Za-z0-9\s&/.-]{3,40}', "[EMPLOYMENT ROLE]", re.IGNORECASE ),
 
             # Employment Evaluation Performance
             (
