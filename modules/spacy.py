@@ -10,7 +10,7 @@ class SpacyRedactor:
         self.__nlp_patterns = [
             ("PERSON", "[NAME]"),
             ("DATE", "[DATE]"),
-            ("GPE", "[GPE]")
+            #("GPE", "[GPE]")
         ]
 
         self.__honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Mx", "Dr" ]
@@ -35,14 +35,14 @@ class SpacyRedactor:
             "ago", "from now", "next", "last", "past", "future",
             "today", "yesterday", "tomorrow", "this", "coming", "previous",
             "day", "days", "month", "months", "year", "years",
-            "week", "weeks"
+            "week", "weeks", "spring", "fall", "autumn", "summer", "winter"
         ]
 
         for ent in nlp_doc.ents:
             if not ent.label_ == "DATE":
                 continue
 
-            if re.match(r"\d{4}", ent.text.strip()):
+            if re.match(r"\d{1,4}", ent.text.strip()):
                 continue
             
             if re.match(r"\b(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day),?\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{2,4})?\b", ent.text, re.M):
@@ -139,6 +139,8 @@ class SpacyRedactor:
             
             print(label, entities)
             for entity_text in entities:
+                entity_text = entity_text.strip()
+
                 # If entities is a list of names, additional get their honorifics version
                 if label == "PERSON":
                     flags = re.M | re.IGNORECASE
@@ -156,6 +158,14 @@ class SpacyRedactor:
                     continue
 
                 texts_to_redact.append(text)
+
+        # Go over the redacted content and redact birth year associated with names
+        for cm in re.finditer(r"\[NAME\]\s*\((\d{4})\)", content, flags=re.M | re.IGNORECASE):
+            if not cm.lastindex:
+                continue
+
+            content = re.sub(cm.group(cm.lastindex), "[DATE]", content, flags=re.M)
+            texts_to_redact.append(cm.group(cm.lastindex))
 
         if redact_now:
             return content
